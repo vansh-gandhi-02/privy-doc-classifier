@@ -1,0 +1,14 @@
+{
+ "l0_s_per_file": 0.00298883933449217,
+ "l1_s_per_page": 0.1129654050000022,
+ "dit_s_per_page": 0.07571172999999988,
+ "ocr_selective_s": 0.4820097533333341,
+ "ocr_full_s": 2.248254706666665,
+ "ocr_page_cue_s": 0.46729478333333335,
+ "inr": {
+  "L0 open every file": 16.604662969400945,
+  "L1 every PDF and image page": 1154.7574733333558,
+  "OCR selective read, every scanned page (D21)": 2830.468384851856,
+  "OCR page-number read, scanned pages of multi-page files (D30)": 2074.269621574074
+ }
+}

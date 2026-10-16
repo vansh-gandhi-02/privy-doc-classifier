@@ -1,0 +1,25 @@
+# ASSUMPTION (the brief asks for one: "spread across these formats in whatever
+# way your experience of real document collections tells you is likely").
+# share:   % of the 5M bucket in this class
+# formats: % of this class in each format
+# Tuned so the implied format split matches brief.yaml within 0.3 points per
+# format. Check after any edit with: python -m scripts.check_mix
+# Status: DRAFT for Vansh's review (DECISIONS D14). KYC is 20% combined (D3).
+
+classes:
+  bank_statement:       {share: 14,  formats: {PDF: 59, XLSX: 10, TXT: 10, JPG: 8, TIFF: 6, EML: 5, PNG: 2}}
+  cc_statement:         {share: 4,   formats: {PDF: 80, EML: 12, PNG: 8}}
+  proof_of_identity:    {share: 12,  formats: {JPG: 45, PDF: 26, PNG: 15, TIFF: 8, EML: 6}}
+  proof_of_address:     {share: 8,   formats: {JPG: 45, PDF: 26, PNG: 15, TIFF: 8, EML: 6}}
+  loan_application:     {share: 8,   formats: {PDF: 46, TIFF: 25, DOCX: 16, JPG: 10, PNG: 3}}
+  cc_application:       {share: 5,   formats: {PDF: 38, TIFF: 30, JPG: 22, PNG: 6, DOCX: 4}}
+  salary_slip:          {share: 10,  formats: {PDF: 50, JPG: 14, DOCX: 14, EML: 10, PNG: 6, XLSX: 6}}
+  itr:                  {share: 7,   formats: {PDF: 75, JPG: 12, EML: 8, PNG: 5}}
+  gst:                  {share: 5,   formats: {PDF: 60, XLSX: 20, EML: 10, JPG: 10}}
+  audited_financials:   {share: 3,   formats: {PDF: 62, XLSX: 28, DOCX: 10}}
+  company_constitution: {share: 2,   formats: {PDF: 52, DOCX: 38, TIFF: 10}}
+  legal_contract:       {share: 6,   formats: {PDF: 44, DOCX: 36, TIFF: 14, EML: 6}}
+  property_collateral:  {share: 6,   formats: {PDF: 46, TIFF: 32, DOCX: 16, JPG: 6}}
+  class10_marksheet:    {share: 1.5, formats: {JPG: 42, PDF: 33, PNG: 15, TIFF: 10}}
+  class12_marksheet:    {share: 1.5, formats: {JPG: 42, PDF: 33, PNG: 15, TIFF: 10}}
+  other:                {share: 7,   formats: {JPG: 23, PPTX: 21, DOCX: 14, TIFF: 11, TXT: 9, PNG: 7, OTH: 7, PDF: 3, EML: 3, XLSX: 2}}

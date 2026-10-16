@@ -1,0 +1,30 @@
+{
+ "n_records": 304,
+ "missed_splits": 0,
+ "stops": {
+  "native text": 161,
+  "L3": 31,
+  "L4": 20,
+  "L1": 14,
+  "full page": 70,
+  "more pages": 4,
+  "selective read": 4
+ },
+ "macro_f1_abstain_as_error": 0.05963636363636363,
+ "macro_f1_abstain_excluded": 0.06188679245283019,
+ "critical_recall": {
+  "proof_of_identity": 0.0,
+  "proof_of_address": 0.0,
+  "legal_contract": 0.0,
+  "property_collateral": 0.0
+ },
+ "passes": false,
+ "unseen_accuracy": NaN,
+ "llm_calls": 51,
+ "llm_inr": 3.481302000000001,
+ "l4_docs": 20,
+ "mode": "quote",
+ "bank_statement_recall": 0.8092105263157895,
+ "note": "the splitter cut 6-page statements into 2.5 pieces on average; headerless pieces drift to salary slip, other or human review",
+ "pieces_per_file": 2.53
+}

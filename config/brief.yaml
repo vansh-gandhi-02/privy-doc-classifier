@@ -1,0 +1,23 @@
+# Facts from the brief (Privy APM Assignment PDF). Nothing in this file is an
+# assumption; our assumptions live in class_mix.yaml, budget.yaml and DECISIONS.md.
+
+n_documents: 5000000
+client_budget_inr: 100000   # hard cap: any approach above it is invalid
+
+accuracy_bar:
+  macro_f1_min: 0.85
+  critical_recall_min: 0.90
+
+rates_inr:
+  cpu_instance_hour: 32            # one instance = 8 vCPU, 32 GB
+  t4_gpu_hour: 80
+  a100_40gb_hour: 320
+  llm_input_per_million_tokens: 22
+  llm_output_per_million_tokens: 88
+  storage_read_per_thousand: 0.033
+cpu_instance_vcpus: 8
+
+format_split_pct: {PDF: 45, JPG: 18, TIFF: 10, DOCX: 8, PNG: 6, EML: 5, XLSX: 4, TXT: 2, PPTX: 1.5, OTH: 0.5}
+
+# "Typical size" column of the brief. OTH has none listed.
+typical_size_kb: {PDF: 350, JPG: 220, TIFF: 800, DOCX: 180, PNG: 400, EML: 30, XLSX: 120, TXT: 15, PPTX: 3000, OTH: null}

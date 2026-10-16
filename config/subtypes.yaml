@@ -1,0 +1,75 @@
+# Sub-types are what the generator draws and what labels.csv records. The class
+# label comes from this mapping, so the label-rule decisions (passbook D1,
+# PoI vs PoA D3, legal vs property D6) are one-line edits here, not regeneration.
+#
+# formats: the file formats a sub-type can appear in, and how it was produced:
+#   digital    born-digital, has a text layer
+#   scan       flatbed scan, image only
+#   photo      phone photo (skew, perspective, shadows, background)
+#   screenshot screen capture
+# EML is not listed: any class can arrive as an email attachment (D12), and the
+# generator wraps a PDF or JPG of that class. "email_no_attachment" covers the rest.
+# weight: relative frequency within its class (default 1).
+
+subtypes:
+  # transactions
+  bank_estatement:          {class: bank_statement, weight: 3, formats: {PDF: digital}}
+  bank_statement_scan:      {class: bank_statement, formats: {PDF: scan, TIFF: scan, JPG: photo, PNG: scan}}
+  bank_statement_export:    {class: bank_statement, formats: {XLSX: digital, TXT: digital}}
+  cc_estatement:            {class: cc_statement, formats: {PDF: digital, PNG: screenshot}}
+  passbook_page:            {class: other, formats: {JPG: photo, PDF: scan, TIFF: scan}}         # D1: kept separate from statements
+
+  # kyc (D3: PAN is always PoI; Aadhaar, DL, Passport, Voter ID are PoA only if an address is visible.
+  # Voter ID front as PoI deviates from the brief, which lists Voter ID only under PoA.)
+  pan_card:                 {class: proof_of_identity, weight: 3, formats: {JPG: photo, PNG: scan, PDF: digital, TIFF: scan}}
+  aadhaar_front:            {class: proof_of_identity, weight: 2, formats: {JPG: photo, PNG: scan, PDF: scan, TIFF: scan}}
+  passport_data_page:       {class: proof_of_identity, formats: {JPG: photo, PNG: scan, PDF: scan, TIFF: scan}}
+  dl_front:                 {class: proof_of_identity, formats: {JPG: photo, PNG: scan, PDF: scan, TIFF: scan}}
+  aadhaar_back:             {class: proof_of_address, weight: 2, formats: {JPG: photo, PNG: scan, PDF: scan, TIFF: scan}}
+  e_aadhaar_letter:         {class: proof_of_address, weight: 2, formats: {PDF: digital, JPG: photo}}
+  passport_address_page:    {class: proof_of_address, formats: {JPG: photo, PNG: scan, PDF: scan, TIFF: scan}}
+  dl_back:                  {class: proof_of_address, formats: {JPG: photo, PNG: scan, PDF: scan, TIFF: scan}}
+  voter_id_front:           {class: proof_of_identity, formats: {JPG: photo, PNG: scan, PDF: scan, TIFF: scan}}
+  voter_id_back:            {class: proof_of_address, formats: {JPG: photo, PNG: scan, PDF: scan, TIFF: scan}}
+
+  # applications
+  loan_application_form:    {class: loan_application, formats: {PDF: scan, TIFF: scan, JPG: photo, PNG: scan, DOCX: digital}}
+  cc_application_form:      {class: cc_application, formats: {PDF: scan, TIFF: scan, JPG: photo, PNG: scan, DOCX: digital}}
+
+  # personal income
+  salary_slip_hrms:         {class: salary_slip, weight: 2, formats: {PDF: digital, XLSX: digital, DOCX: digital}}
+  salary_slip_scan:         {class: salary_slip, formats: {JPG: photo, PNG: scan, PDF: scan}}
+  itr_v_acknowledgement:    {class: itr, weight: 2, formats: {PDF: digital, JPG: photo, PNG: scan}}
+  itr_full_return:          {class: itr, formats: {PDF: digital}}
+
+  # business
+  gst_reg06_certificate:    {class: gst, formats: {PDF: digital, JPG: photo}}
+  gst_return:               {class: gst, weight: 2, formats: {PDF: digital, XLSX: digital}}
+  audited_financials:       {class: audited_financials, formats: {PDF: digital, XLSX: digital, DOCX: digital}}
+  incorporation_certificate: {class: company_constitution, formats: {PDF: digital, TIFF: scan}}
+  moa_aoa:                  {class: company_constitution, formats: {PDF: scan, DOCX: digital, TIFF: scan}}
+  board_resolution:         {class: company_constitution, formats: {DOCX: digital, PDF: scan, TIFF: scan}}
+
+  # legal and property (D6: anything transferring, mortgaging, titling or valuing property is Property)
+  legal_agreement:          {class: legal_contract, weight: 2, formats: {PDF: scan, DOCX: digital, TIFF: scan}}
+  rent_agreement:           {class: legal_contract, formats: {PDF: scan, DOCX: digital, TIFF: scan}}
+  sale_deed:                {class: property_collateral, weight: 2, formats: {PDF: scan, TIFF: scan, JPG: photo}}
+  mortgage_deed:            {class: property_collateral, formats: {PDF: scan, TIFF: scan}}
+  title_search_report:      {class: property_collateral, formats: {PDF: digital, DOCX: digital}}
+  valuation_report:         {class: property_collateral, formats: {PDF: digital, DOCX: digital}}
+
+  # education (board names are the discriminator: SSC/HSC, SSLC/PUC, Secondary/Senior School Certificate, ICSE/ISC)
+  marksheet_10_cbse:        {class: class10_marksheet, formats: {JPG: photo, PDF: digital, PNG: scan, TIFF: scan}}
+  marksheet_10_state:       {class: class10_marksheet, formats: {JPG: photo, PDF: scan, PNG: scan, TIFF: scan}}
+  marksheet_12_cbse:        {class: class12_marksheet, formats: {JPG: photo, PDF: digital, PNG: scan, TIFF: scan}}
+  marksheet_12_state:       {class: class12_marksheet, formats: {JPG: photo, PDF: scan, PNG: scan, TIFF: scan}}
+
+  # other (hard negatives and junk)
+  cancelled_cheque:         {class: other, formats: {JPG: photo, PNG: scan, TIFF: scan, PDF: scan}}
+  utility_bill:             {class: other, formats: {PDF: digital, JPG: photo}}
+  generic_deck:             {class: other, formats: {PPTX: digital}}
+  misc_letter:              {class: other, formats: {DOCX: digital, PDF: digital, TIFF: scan}}
+  system_text:              {class: other, formats: {TXT: digital, XLSX: digital}}
+  photo_or_blank:           {class: other, formats: {JPG: photo, PNG: screenshot}}
+  email_no_attachment:      {class: other, formats: {EML: digital}}
+  archive_or_heic:          {class: other, formats: {OTH: digital}}

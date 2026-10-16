@@ -1,0 +1,126 @@
+{
+ "template_disjoint_eval": {
+  "AADHAAR": {
+   "n": 4079,
+   "masked": 0.8698210345672959
+  },
+  "ADDRESS": {
+   "n": 2420,
+   "masked": 0.5632231404958677
+  },
+  "API_KEY": {
+   "n": 1066,
+   "masked": 0.075046904315197
+  },
+  "CREDIT_CARD": {
+   "n": 698,
+   "masked": 1.0
+  },
+  "DATE_OF_BIRTH": {
+   "n": 2490,
+   "masked": 0.6807228915662651
+  },
+  "DRIVER_LICENSE": {
+   "n": 1413,
+   "masked": 1.0
+  },
+  "EMAIL": {
+   "n": 3004,
+   "masked": 0.9903462050599201
+  },
+  "IP_ADDRESS": {
+   "n": 1058,
+   "masked": 0.0
+  },
+  "PAN_CARD": {
+   "n": 813,
+   "masked": 1.0
+  },
+  "PASSPORT": {
+   "n": 891,
+   "masked": 1.0
+  },
+  "PASSWORD": {
+   "n": 968,
+   "masked": 0.007231404958677686
+  },
+  "PERSON_NAME": {
+   "n": 8785,
+   "masked": 0.0003414911781445646
+  },
+  "PHONE": {
+   "n": 7079,
+   "masked": 0.8367000988840232
+  },
+  "SSN": {
+   "n": 373,
+   "masked": 0.34316353887399464
+  },
+  "UPI_ID": {
+   "n": 983,
+   "masked": 1.0
+  },
+  "USERNAME": {
+   "n": 1044,
+   "masked": 0.0
+  },
+  "VEHICLE_REG": {
+   "n": 1385,
+   "masked": 0.9725631768953069
+  }
+ },
+ "real_world_eval": {
+  "AADHAAR": {
+   "n": 1000,
+   "masked": 0.875
+  },
+  "ADDRESS": {
+   "n": 400,
+   "masked": 0.59
+  },
+  "API_KEY": {
+   "n": 200,
+   "masked": 0.08
+  },
+  "DATE_OF_BIRTH": {
+   "n": 200,
+   "masked": 0.625
+  },
+  "DRIVER_LICENSE": {
+   "n": 200,
+   "masked": 1.0
+  },
+  "EMAIL": {
+   "n": 700,
+   "masked": 1.0
+  },
+  "IP_ADDRESS": {
+   "n": 200,
+   "masked": 0.0
+  },
+  "PAN_CARD": {
+   "n": 400,
+   "masked": 1.0
+  },
+  "PERSON_NAME": {
+   "n": 2200,
+   "masked": 0.0
+  },
+  "PHONE": {
+   "n": 1200,
+   "masked": 0.8483333333333334
+  },
+  "UPI_ID": {
+   "n": 500,
+   "masked": 1.0
+  },
+  "USERNAME": {
+   "n": 200,
+   "masked": 0.0
+  },
+  "VEHICLE_REG": {
+   "n": 200,
+   "masked": 0.98
+  }
+ }
+}

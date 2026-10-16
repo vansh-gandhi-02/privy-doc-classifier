@@ -1,0 +1,39 @@
+# The brief's 15 classes plus "other" for documents outside the taxonomy.
+# bucket:   the step-1 group (DECISIONS D4).
+# critical: needs recall >= 0.90 (D7, PROPOSED, not confirmed).
+# scored:   counts as a class in macro-F1. "other" is not scored, but an "other"
+#           document predicted as a real class still costs that class precision.
+
+buckets:
+  transactions: "Account transactions"
+  kyc: "KYC (identity and address)"
+  applications: "Applications"
+  personal_income: "Personal income and tax"
+  business: "Business, tax and corporate"
+  legal_property: "Legal and property"
+  education: "Education"
+  other: "Outside the taxonomy"
+
+classes:
+  bank_statement:       {name: "Bank Statement", bucket: transactions, critical: false, scored: true}
+  cc_statement:         {name: "Credit Card Statement", bucket: transactions, critical: false, scored: true}
+  proof_of_identity:    {name: "Proof of Identity", bucket: kyc, critical: true, scored: true}
+  proof_of_address:     {name: "Proof of Address", bucket: kyc, critical: true, scored: true}
+  loan_application:     {name: "Loan Application Form", bucket: applications, critical: false, scored: true}
+  cc_application:       {name: "Credit Card Application", bucket: applications, critical: false, scored: true}
+  salary_slip:          {name: "Salary Slip", bucket: personal_income, critical: false, scored: true}
+  itr:                  {name: "ITR", bucket: personal_income, critical: false, scored: true}
+  gst:                  {name: "GST Registration / Return", bucket: business, critical: false, scored: true}
+  audited_financials:   {name: "Audited Financial Statements", bucket: business, critical: false, scored: true}
+  company_constitution: {name: "Company Constitution & Board Resolution", bucket: business, critical: false, scored: true}
+  legal_contract:       {name: "Legal Contract", bucket: legal_property, critical: true, scored: true}
+  property_collateral:  {name: "Property & Collateral Documents", bucket: legal_property, critical: true, scored: true}
+  class10_marksheet:    {name: "Class 10 Marksheet", bucket: education, critical: false, scored: true}
+  class12_marksheet:    {name: "Class 12 Marksheet", bucket: education, critical: false, scored: true}
+  other:                {name: "Other (outside the taxonomy)", bucket: other, critical: false, scored: false}
+
+# D24: the type models (L1, L2) see Proof of Identity and Proof of Address as
+# one class. Every document that lands in it is asked "is an address visible?"
+# (pipeline/l2_text/address.py), which splits it back into the brief's two classes.
+model_merge:
+  kyc_id: {name: "KYC ID document", members: [proof_of_identity, proof_of_address], bucket: kyc}

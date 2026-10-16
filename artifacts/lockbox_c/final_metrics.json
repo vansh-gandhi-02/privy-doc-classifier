@@ -1,0 +1,28 @@
+{
+ "n_records": 430,
+ "missed_splits": 0,
+ "stops": {
+  "native text": 181,
+  "address question": 69,
+  "selective read": 90,
+  "L1": 57,
+  "full page": 11,
+  "more pages": 19,
+  "L4": 1,
+  "L3": 2
+ },
+ "macro_f1_abstain_as_error": 0.9819013977857391,
+ "macro_f1_abstain_excluded": 0.9836107994951409,
+ "critical_recall": {
+  "proof_of_identity": 1.0,
+  "proof_of_address": 1.0,
+  "legal_contract": 1.0,
+  "property_collateral": 1.0
+ },
+ "passes": true,
+ "unseen_accuracy": 0.9775280898876404,
+ "llm_calls": 3,
+ "llm_inr": 0.073832,
+ "l4_docs": 1,
+ "mode": "quote"
+}

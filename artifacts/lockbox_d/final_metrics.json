@@ -1,0 +1,29 @@
+{
+ "n_records": 120,
+ "missed_splits": 0,
+ "stops": {
+  "native text": 60,
+  "L3": 22,
+  "full page": 27,
+  "L4": 4,
+  "more pages": 5,
+  "selective read": 2
+ },
+ "macro_f1_abstain_as_error": 0.06495726495726496,
+ "macro_f1_abstain_excluded": 0.06608695652173914,
+ "critical_recall": {
+  "proof_of_identity": 0.0,
+  "proof_of_address": 0.0,
+  "legal_contract": 0.0,
+  "property_collateral": 0.0
+ },
+ "passes": false,
+ "singles_kept_whole": "120/120",
+ "first_document_right": "114/120",
+ "pieces_per_file": 1.0,
+ "unseen_accuracy": NaN,
+ "llm_calls": 26,
+ "llm_inr": 2.7652900000000002,
+ "l4_docs": 4,
+ "mode": "quote"
+}

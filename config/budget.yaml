@@ -1,0 +1,17 @@
+# Our commercial targets on the client's Rs 1,00,000 (DECISIONS D2, PROPOSED).
+# The client cap stays in brief.yaml; these are tighter limits we set ourselves.
+
+contract_value_inr: 100000
+target_compute_inr: 50000    # 50% margin on compute; the controller aims at this minus the reserve (D2, revised 16 Oct)
+ceiling_compute_inr: 60000   # Vansh's 40% margin floor; spend above this needs sign-off
+reserve_fraction: 0.10       # held back for mid-run surprises (a scan-heavy batch, say)
+
+# Estimates, UNVERIFIED until costs/timing.py measures them.
+fixed_stage_estimate_inr: 8000         # L0 + L1 + L2 + label bootstrap over 5M docs
+human_review_inr_per_doc: 0   # the brief quotes no price, so treated as free; the count is kept in the low thousands (D30)
+delivery_labour_inr: 0                 # 0 if run as a productised Privy job; see D2 if bespoke
+
+# Typical LLM call shapes used for the envelope (tokens).
+llm_call_shapes:
+  short:     {input: 1500, output: 5}     # answer only
+  reasoning: {input: 1500, output: 300}   # brief reasoning before the answer

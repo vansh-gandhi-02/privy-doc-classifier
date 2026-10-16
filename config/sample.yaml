@@ -1,0 +1,6 @@
+# Sample composition (DECISIONS D14, D15).
+core_size: 3000          # drawn at the assumed class mix; used for cost per document
+min_per_class: 200       # top-up so every class can be trained, calibrated and tested
+templates_per_subtype: 3 # issuer variants per sub-type (e.g. SBI, HDFC, ICICI statement layouts)
+holdout_templates: 1     # whole templates kept out of training, so the test set has unseen issuers
+seed: 7

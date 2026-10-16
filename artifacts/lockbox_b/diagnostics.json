@@ -1,0 +1,19 @@
+{
+ "pieces": 304,
+ "files": 120,
+ "pieces_per_file": 2.53,
+ "bank_statement_recall": 0.8092105263157895,
+ "piece_predictions": {
+  "bank_statement": 246,
+  "salary_slip": 27,
+  "other": 9,
+  "ABSTAIN": 20,
+  "legal_contract": 2
+ },
+ "first_document_after_l2": {
+  "bank_statement": 87,
+  "to_llm": 31,
+  "wrong": 2
+ },
+ "note": "the splitter cut 6-page statements into 2.5 pieces on average; headerless pieces drift to salary slip, other or human review"
+}

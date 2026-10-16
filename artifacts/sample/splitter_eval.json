@@ -1,0 +1,23 @@
+{
+ "dev_test (ours)": {
+  "layout only": {
+   "bundles_exact": "29/30",
+   "singles_split": "1/191"
+  },
+  "with page numbers": {
+   "bundles_exact": "29/30",
+   "singles_split": "1/191"
+  }
+ },
+ "agami_dev (80 fresh statements)": {
+  "layout only": {
+   "pieces_per_file": 2.5,
+   "kept_whole": "16/80"
+  },
+  "with page numbers": {
+   "pieces_per_file": 1.0,
+   "kept_whole": "80/80"
+  },
+  "page-number reads, CPU s per scanned page": 1.351
+ }
+}

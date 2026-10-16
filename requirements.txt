@@ -1,0 +1,21 @@
+# Python 3.12. Pinned versions, as used to produce every result in this repo.
+PyYAML==6.0.3
+numpy==2.5.4
+pillow==12.3.0
+pymupdf==1.28.2
+Faker==40.43.0
+python-docx==1.2.0
+openpyxl==3.1.5
+python-pptx==1.0.2
+scikit-learn==1.9.1
+pytest==9.1.1
+rapidocr-onnxruntime==1.4.4   # local OCR, used by the masker and for header OCR
+opencv-python==4.14.0.94      # 4.x: OpenCV 5 dropped the face detector the masker uses
+torch==2.14.1                 # DiT (L1), runs on CPU or Apple GPU
+transformers==5.19.0          # loads microsoft/dit-base-finetuned-rvlcdip (MIT licence)
+matplotlib==3.11.2           # controller demo chart
+pyarrow==26.0.0                # reads the PII test set (scripts/check_masker.py)
+# to run notebooks/walkthrough.ipynb
+nbclient==0.11.0
+ipykernel==7.4.0
+nbformat==5.11.1
