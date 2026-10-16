@@ -1,4 +1,6 @@
-# Python 3.12. Pinned versions, as used to produce every result in this repo.
+# Python 3.12 or 3.13. Pinned versions, as used to produce every result in this repo.
+# On Python 3.13, also run: pip install --no-deps --ignore-requires-python rapidocr-onnxruntime==1.4.4
+# (it declares Python < 3.13 but runs on 3.13; its dependencies are pinned below)
 PyYAML==6.0.3
 numpy==2.5.4
 pillow==12.3.0
@@ -9,7 +11,12 @@ openpyxl==3.1.5
 python-pptx==1.0.2
 scikit-learn==1.9.1
 pytest==9.1.1
-rapidocr-onnxruntime==1.4.4   # local OCR, used by the masker and for header OCR
+rapidocr-onnxruntime==1.4.4; python_version < "3.13"   # local OCR, used by the masker and for header OCR
+onnxruntime==1.31.0           # rapidocr's dependencies, pinned so it can be installed on its own
+pyclipper==1.4.0
+shapely==2.2.0
+six==1.17.0
+tqdm==4.70.1
 opencv-python==4.14.0.94      # 4.x: OpenCV 5 dropped the face detector the masker uses
 torch==2.14.1                 # DiT (L1), runs on CPU or Apple GPU
 transformers==5.19.0          # loads microsoft/dit-base-finetuned-rvlcdip (MIT licence)
