@@ -42,10 +42,13 @@
 
 \begin{document}
 
-{\fontsize{17}{20}\selectfont\bfseries Classifying 5M bank documents on a \R1,00,000 budget\par}
+{\fontsize{17}{20}\selectfont\bfseries IDfy Privy APM Assignment: Approach Note\par}
 \vspace{2pt}
-{\color{ngrey} Approach note \textbullet\ IDfy Privy APM take-home \textbullet\ Vansh Gandhi\\
-Code and every number: \href{https://github.com/vansh-gandhi-02/privy-doc-classifier}{\underline{github.com/vansh-gandhi-02/privy-doc-classifier}} \textbullet\ Flowchart: separate PDF\par}
+{\fontsize{11}{13}\selectfont\bfseries Vansh Gandhi\par}
+\vspace{3pt}
+{\fontsize{12}{14.5}\selectfont\color{ngrey} Classifying 5M bank documents into 15 types on a fixed \R1,00,000 budget\par}
+\vspace{2pt}
+{\color{ngrey} Code and every number: \href{https://github.com/vansh-gandhi-02/privy-doc-classifier}{\underline{github.com/vansh-gandhi-02/privy-doc-classifier}} \textbullet\ Flowchart: separate PDF\par}
 
 \begin{callout}
 \textcolor{npin}{\faThumbtack}\ \textbf{Key results}
@@ -79,7 +82,8 @@ Code and every number: \href{https://github.com/vansh-gandhi-02/privy-doc-classi
   \item Passbooks are not bank statements (labelled Other). An email takes its attachment's class.
   \end{itemize}
 \item \textbf{One file can hold several documents} (merged PDFs); each is classified with its page range.
-\item \textbf{Prices:} the brief's rates; a cloud vCPU taken as 2x slower than our laptop core. \textbf{People:} no quoted price, so counted, not costed.
+\item \textbf{Prices:} the brief's rates; a cloud vCPU taken as 2x slower than our laptop core.
+\item \textbf{People:} the brief quotes no price for human review, so it is counted, not costed.
 \item \textbf{Margin:} we target \R50k of compute (50\% margin) with a 10\% reserve, so the controller aims at \R45k.
 \item \textbf{Test data:} synthetic documents for all 15 classes (no real customer data), plus public Indian bank statements (AgamiAI).
 \end{itemize}
@@ -129,6 +133,7 @@ Code and every number: \href{https://github.com/vansh-gandhi-02/privy-doc-classi
 \begin{itemize}
 \item \textbf{Everything except the LLM runs on CPU:} a pretrained layout model (DiT) with a classifier trained in seconds; a text model over 3 to 5 letter pieces (survives OCR typos); checksummed Indian IDs; the address rule, page splitter and masker.
 \item \textbf{Every model is calibrated,} so a reported 95\% is right 95\% of the time. Together they settle \N{no-llm} of documents before any LLM call.
+\item \textbf{What leaves our machine:} only the LLM call, for \N{c-llm-share} of documents. It sends text, never page images, and we mask IDs and contact details first; names are not masked yet (see Limitations).
 \end{itemize}
 
 \section{Results on synthetic documents (documents sent to a person count as errors)}
@@ -189,8 +194,8 @@ People (about \N{human-docs} documents; no price quoted) & \N{c-human} \\ \hline
   \end{itemize}
 \item \textbf{Conformal prediction on critical classes.}
   \begin{itemize}
-  \item \lab{Why:} turns ``recall of 0.90 or more'' from a measured result into a guarantee.
-  \item \lab{Why not yet:} it is only as good as its calibration set; on synthetic data it would describe our generator, not the bank.
+  \item \lab{Why:} it sets the critical-class threshold from labelled data so that recall of 0.90 or more is guaranteed, not just observed on our test sets.
+  \item \lab{Why not yet:} the guarantee holds only for documents like the ones it was calibrated on. Ours are synthetic; the real run's labelled seed is the right set.
   \end{itemize}
 \item \textbf{A vision LLM for scans with no readable text.}
   \begin{itemize}

@@ -78,6 +78,8 @@ python -m scripts.classify <folder>    # classify any folder of your own documen
 pytest -q                              # 33 tests
 ```
 
+On Python 3.13, add one step after `pip install -r requirements.txt`: `pip install --no-deps --ignore-requires-python rapidocr-onnxruntime==1.4.4` (the OCR package declares Python < 3.13 but runs on 3.13; the notebook does this for you on Colab).
+
 **About the LLM step.** The LLM answers in this repo were made with `claude -p` on a Claude subscription, priced at the brief's token rates, and are replayed from `artifacts/`. To run the LLM step on your own documents you need the `claude` CLI logged in to your own subscription, or to swap `pipeline/l3_llm/llm.py`'s `call()` for an API client with your own key. Without either, `scripts/classify.py --no-llm` still runs every other level and marks those documents `NEEDS_LLM`.
 
 ## Repo map
