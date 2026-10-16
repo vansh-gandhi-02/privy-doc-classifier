@@ -3,8 +3,8 @@
 A prototype for the IDfy Privy APM take-home. The task: sort 5 million mixed-format documents from an S3 bucket into 15 classes for at most Rs 1,00,000, with macro-F1 at least 0.85 and recall at least 0.90 on the critical classes.
 
 **Deliverables** (`deliverables/`):
-- `approach.pdf`: the two-page approach note, including the local intelligence used.
-- `flowchart.drawio`: the pipeline, with the accept-vs-spend-more rule at every gate (open at app.diagrams.net).
+- `approach.pdf`: the two-page approach note, including the local intelligence used (source `approach.tex`; its numbers are filled in from the metrics files by `tools/make_doc.py`).
+- `flowchart.pdf`: the pipeline on one page, with a guide to reading it and the accept-vs-spend-more rule at every gate. `flowchart.drawio` is the editable version (open at app.diagrams.net).
 - `notebooks/walkthrough.ipynb`: runs the training and evaluation and shows every number below; already run, so the outputs are visible without running it. To run it in the browser with nothing to install: [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/vansh-gandhi-02/privy-doc-classifier/blob/main/notebooks/walkthrough.ipynb) (Runtime, Run all; about 30 minutes on Colab's free CPU).
 
 ## The idea

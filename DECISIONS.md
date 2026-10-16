@@ -296,7 +296,7 @@ One implementation detail differs from the 3c wording: when a bucket is locked, 
 
 ## D28. Findings from the final build: ADOPTED (16 Oct, overnight)
 
-**L3 mode (closes D25 4d): thinking.** 450 `claude -p` calls (subscription only) on 150 hard calib and dev-test documents:
+**L3 mode (closes D25 4d): quote-then-label** (thinking on the first run; see the final re-run below). 450 `claude -p` calls (subscription only) on 150 hard calib and dev-test documents:
 
 | Mode | Hard-set accuracy | Calib half (66) | Rs per call | Thinking tokens |
 |---|---|---|---|---|
@@ -305,6 +305,8 @@ One implementation detail differs from the 3c wording: when a bucket is locked, 
 | Thinking, max effort | 0.987 | 1.000 | 0.041 | ~290 |
 
 The rule as first written (cheapest mode at 95% or more on calib) picked label-only by one document. On 66 documents that estimate is noisy, so the rule now asks for the **lower 90% Wilson bound** to clear 95%: label-only 0.89 fails, thinking 0.96 passes. At 5M the difference is about Rs 450 in total, because only ~18k documents reach the LLM. This matches Vansh's view that plain Haiku struggles where L1 and L2 did.
+
+**Final re-run (16 Oct; the run behind the published numbers).** Label only 0.913 at Rs 0.014 a call; quote-then-label 0.987 at Rs 0.038; thinking 0.987 at Rs 0.039. Quote and thinking both clear the bound (0.96); the rule takes the cheaper, so the final mode is quote-then-label. These are the numbers in the notebook, the approach note and the flowchart.
 
 **A stricter 99% gate for critical classes: tested, not adopted.** It sent 65 more dev-test documents (7.7%) to the LLM and fixed none of the errors, because the critical-class errors were confident ones (above 99%).
 

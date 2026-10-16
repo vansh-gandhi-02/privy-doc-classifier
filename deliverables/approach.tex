@@ -1,0 +1,207 @@
+% The two-page approach note. Numbers come from numbers.tex, which tools/make_doc.py
+% writes from the metrics files; compile with tectonic or XeLaTeX.
+\documentclass[9pt]{extarticle}
+\usepackage[a4paper,left=1.35cm,right=1.35cm,top=1.0cm,bottom=0.9cm]{geometry}
+\usepackage{fontspec}
+\IfFontExistsTF{Helvetica Neue}{\setmainfont{Helvetica Neue}[BoldFont={Helvetica Neue Bold}, ItalicFont={Helvetica Neue Italic}, BoldItalicFont={Helvetica Neue Bold Italic}]}{\setmainfont{TeX Gyre Heros}}
+\usepackage{xcolor}
+\definecolor{ink}{HTML}{37352F}
+\definecolor{nblue}{HTML}{337EA9}
+\definecolor{norange}{HTML}{D9730D}
+\definecolor{ngrey}{HTML}{787774}
+\definecolor{nfill}{HTML}{F1F1EF}
+\definecolor{nrule}{HTML}{DFDFDC}
+\definecolor{npin}{HTML}{D44C47}
+\usepackage{enumitem}
+\setlist{nosep}
+\setlist[itemize,1]{label=\textbullet, leftmargin=1.05em, topsep=1pt, itemsep=1.2pt}
+\setlist[itemize,2]{label=$\circ$, leftmargin=1.05em, topsep=0.6pt, itemsep=0.6pt}
+\usepackage{fontawesome5}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx,colortbl,array}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\titleformat{\section}{\fontsize{11.5}{13.5}\selectfont\bfseries\color{nblue}}{}{0pt}{\underline}
+\titlespacing*{\section}{0pt}{6pt}{2.5pt}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\color{ink}
+
+\input{numbers}
+\newcommand\N[1]{\ifcsname n:#1\endcsname\csname n:#1\endcsname\else\textbf{??#1}\fi}
+\newcommand\R{₹}
+\newcommand\lab[1]{\textcolor{norange}{\textbf{#1}}}
+\newtcolorbox{callout}{enhanced, colback=nfill, colframe=nfill, arc=3pt, boxrule=0pt,
+  left=5pt, right=6pt, top=3pt, bottom=3pt, before skip=4pt, after skip=2pt}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\arrayrulecolor{nrule}
+\renewcommand{\arraystretch}{1.15}
+\newcommand\hdr{\rowcolor{nfill}}
+
+\begin{document}
+
+{\fontsize{17}{20}\selectfont\bfseries Classifying 5M bank documents on a \R1,00,000 budget\par}
+\vspace{2pt}
+{\color{ngrey} Approach note \textbullet\ IDfy Privy APM take-home \textbullet\ Vansh Gandhi\\
+Code and every number: \href{https://github.com/vansh-gandhi-02/privy-doc-classifier}{\underline{github.com/vansh-gandhi-02/privy-doc-classifier}} \textbullet\ Flowchart: separate PDF\par}
+
+\begin{callout}
+\textcolor{npin}{\faThumbtack}\ \textbf{Key results}
+\begin{itemize}
+\item \textbf{Passes the bar on every test set, sealed ones included:} macro-F1 \N{f1-min} to \N{f1-max} (bar 0.85); critical recall \N{crit-min} or higher (bar 0.90).
+\item \textbf{\R\N{total-round} for 5M documents} (\N{paise} paise each), \N{budget-share} of the budget. Worst plausible case \R\N{worst-round}; brute force \R\N{brute}.
+\item \textbf{\N{no-llm} of documents never reach the LLM;} about \N{human-docs} (\N{human-share}) go to a person.
+\end{itemize}
+\end{callout}
+
+\section{The idea}
+\begin{itemize}
+\item \textbf{Every document carries a probability for each class,} starting from the class mix expected for its file format (never zero).
+\item \textbf{Evidence is bought cheapest first:} metadata, page layout, a few lines of text, the full page, then an LLM. Each step updates the probabilities (Bayes).
+\item \textbf{A document stops as soon as one class reaches 95\%;} otherwise it buys the cheapest next step that can still separate the classes in play.
+  \begin{itemize}
+  \item A sequential test (Wald's SPRT, many-class form): money goes only where the evidence so far cannot decide.
+  \end{itemize}
+\item \textbf{A budget controller moves the gate ($\tau$) mid-run} when spend trends over or under plan.
+\end{itemize}
+
+\section{What we assumed}
+\begin{itemize}
+\item \textbf{15 classes.} The brief lists 15 and mentions ``25'' once; we read that as a leftover.
+\item \textbf{Critical: Legal, Property, Proof of Identity (PoI), Proof of Address (PoA).} No class is medical; in a bank, ``regulatory'' means KYC.
+\item \textbf{Class mix per format:} from typical bank collections; reproduces the brief's format split within 0.03 points. KYC is 20\%.
+\item \textbf{Class boundaries:}
+  \begin{itemize}
+  \item An ID with a visible address is PoA, otherwise PoI; PAN is always PoI.
+  \item Anything that transfers, mortgages, titles or values property is Property; every other agreement, rent included, is Legal.
+  \item Passbooks are not bank statements (labelled Other). An email takes its attachment's class.
+  \end{itemize}
+\item \textbf{One file can hold several documents} (merged PDFs); each is classified with its page range.
+\item \textbf{Prices:} the brief's rates; a cloud vCPU taken as 2x slower than our laptop core. \textbf{People:} no quoted price, so counted, not costed.
+\item \textbf{Margin:} we target \R50k of compute (50\% margin) with a 10\% reserve, so the controller aims at \R45k.
+\item \textbf{Test data:} synthetic documents for all 15 classes (no real customer data), plus public Indian bank statements (AgamiAI).
+\end{itemize}
+
+\section{How a document moves, cheapest step first}
+\begin{itemize}
+\item \textbf{L0, open the file} (\N{l0-ms} ms): true type, visible text or scan, emails and zips unpacked. Same checksum as an earlier file: copy its label.
+\item \textbf{L1, layout} (\N{l1-s} s a page): a frozen document-vision model (DiT) plus six readable signals (page shape, QR code, photo).
+  \begin{itemize}
+  \item Settles \N{l1-settles} of scans, all correctly. A passbook and a statement share words, not layout.
+  \end{itemize}
+\item \textbf{L2, text:} free text first (1 ms); for scans, the top and largest lines (\N{sel-s} s), then the full page (\N{full-s} s), then the next and last pages.
+  \begin{itemize}
+  \item A word counts only if it is likelier under one remaining class than another, so shared words cancel out.
+  \item Checksum-valid IDs (Aadhaar, PAN, GSTIN) are evidence, not verdicts: a loan form quotes a PAN too.
+  \item Legal and property files open with the same e-stamp page, so they read their later pages first.
+  \end{itemize}
+\item \textbf{Address question} (KYC cards, one full read): a valid PIN code plus an address label or state means PoA, otherwise PoI.
+\item \textbf{L3, LLM} (\R\N{llm-call} a call): Claude Haiku sees masked text and only the 2 to 5 classes in play plus ``none of these''.
+  \begin{itemize}
+  \item It quotes the deciding words, then answers; the answer is weighed by its measured error rate, not taken as the verdict.
+  \end{itemize}
+\item \textbf{L4, a person:} whatever is still below 95\% after the LLM.
+\item \textbf{Two safeguards:}
+  \begin{itemize}
+  \item \lab{Critical safety net:} a document with a 10\% or higher chance of a critical class keeps a 95\% gate, whatever the controller does.
+  \item \lab{Merged PDFs:} split page by page; ``Page 3'' cannot start a document, ``Page 1'' always does.
+  \end{itemize}
+\end{itemize}
+
+\section{Why the gates sit where they do}
+\begin{itemize}
+\item \textbf{95\% to accept:} an accepted document is wrong at most 5\% of the time (measured: \N{settled-acc} right). Each step costs several times the last, so stopping early is the cheapest path to the bar.
+\item \textbf{$\tau$, moved by the controller between 85\% and 99\%,} applies to every gate before the LLM, because reading pages is where the money goes.
+  \begin{itemize}
+  \item Measured at 5M: $\tau$ 0.85 costs \R\N{t85-cost} at \N{t85-acc} accuracy; 0.95, \R\N{t95-cost} at \N{t95-acc}; 0.99, \R\N{t99-cost} at \N{t99-acc}. Above 95\% buys nothing, so it holds 95\%.
+  \item Squeezed to \R23k with a scan-heavy stretch, it lowered $\tau$ to \N{stress-tau} and spent \R\N{stress-spent}, against \R\N{stress-fixed} without it.
+  \item The 85\% floor is a judgement call: at 80\%, too many wrong labels get through for a bank.
+  \end{itemize}
+\item \textbf{LLM effort, by a rule fixed in advance:} the cheapest mode whose accuracy clears 95\% at the lower 90\% confidence bound.
+  \begin{itemize}
+  \item On 150 hard documents: answer only, \N{label-acc} (\R\N{label-call} a call); quote first, \N{quote-acc} (\R\N{llm-call}). Quoting wins, for about \R\N{quote-extra} more across 5M.
+  \end{itemize}
+\end{itemize}
+
+\section{Local intelligence}
+\begin{itemize}
+\item \textbf{Everything except the LLM runs on CPU:} a pretrained layout model (DiT) with a classifier trained in seconds; a text model over 3 to 5 letter pieces (survives OCR typos); checksummed Indian IDs; the address rule, page splitter and masker.
+\item \textbf{Every model is calibrated,} so a reported 95\% is right 95\% of the time. Together they settle \N{no-llm} of documents before any LLM call.
+\end{itemize}
+
+\section{Results on synthetic documents (documents sent to a person count as errors)}
+\vspace{1pt}
+\begin{tabularx}{\linewidth}{|L|p{1.6cm}|p{4.5cm}|p{2.3cm}|}
+\hline
+\hdr\textbf{Test set} & \textbf{Macro-F1} & \textbf{Critical recall} & \textbf{LLM / person} \\ \hline
+Dev-test: \N{dev-n} documents & \N{dev-f1} & \N{dev-crit} & \N{dev-llm} / \N{dev-l4} \\ \hline
+Lockbox A: \N{a-n} documents, 40\% in unseen layouts; sealed, run once & \N{a-f1} & \N{a-crit} & \N{a-llm} / \N{a-l4} \\ \hline
+Lockbox C: \N{c-n} fresh documents, built after everything was frozen; run once & \N{c-f1} & \N{c-crit} & \N{c-llm} / \N{c-l4} \\ \hline
+Lockbox D: 120 outside bank statements; run once & \multicolumn{2}{p{\dimexpr 6.1cm+2\tabcolsep+\arrayrulewidth\relax}|}{\N{d-whole} kept whole; \N{d-right} labelled bank statement} & \N{d-llm} / \N{d-l4} \\ \hline
+\end{tabularx}
+\vspace{2pt}
+\begin{itemize}
+\item \textbf{No lockbox was used to train, tune or choose anything.} Each was run once.
+\item \textbf{One weakness found and fixed:} on Lockbox B (120 other outside statements) the splitter cut each statement into \N{b-pieces} pieces. Reading printed page numbers fixed it (\N{spl-before} kept whole before, \N{spl-after} after, on 80 further statements), confirmed once on Lockbox D.
+\end{itemize}
+
+\section{Cost at 5M documents}
+\vspace{1pt}
+\begin{tabularx}{\linewidth}{|L|R{2.2cm}|}
+\hline
+\hdr\textbf{Item} & \textbf{\R} \\ \hline
+Open and look at every page (L0 + L1) & \N{c-look} \\ \hline
+Selective reads of scanned pages, and their page-number lines & \N{c-sel} \\ \hline
+Further reads (full pages, later pages, KYC address reads) & \N{c-full} \\ \hline
+LLM (\N{c-llm-share} of documents) & \N{c-llmcost} \\ \hline
+People (about \N{human-docs} documents; no price quoted) & \N{c-human} \\ \hline
+\hdr\textbf{Total} (\N{paise} paise a document; \N{budget-share} of the budget) & \textbf{\N{total}} \\ \hline
+\end{tabularx}
+\vspace{2pt}
+\begin{itemize}
+\item \textbf{Measured precision: $\pm$\N{ci-pm} at 95\% confidence} (\R\N{ci-lo} to \R\N{ci-hi}), from timings, per-class rates and token counts.
+\item \textbf{Assumptions move it more:} cloud vCPU 1x to 3x slower, \R\N{s-1x} to \R\N{s-3x}; 1.7 to 6.2 pages per PDF, \R\N{s-p17} to \R\N{s-p62}; worst case \R\N{worst}, under the \R50k target.
+  \begin{itemize}
+  \item Both are cheap to pin down: an L0 pass over the bucket (about \R225) gives page counts; timing the first 1,000 documents gives cloud speed.
+  \end{itemize}
+\end{itemize}
+
+\section{Limitations}
+\begin{itemize}
+\item \textbf{Accuracy is on synthetic documents.} IDs and marksheets follow official designs but were not checked against real copies; bank statements are the only outside source tested.
+\item \textbf{The masker misses names.} On a public Indian PII set it removes PAN, licence, email and UPI \N{m-pan}; Aadhaar \N{m-aadhaar}; phone \N{m-phone}; date of birth \N{m-dob}.
+\item \textbf{A real run needs a labelled seed:} the LLM labels about 5,000 documents; people check only where it disagrees with our models (about 600).
+\end{itemize}
+
+\section{Next steps}
+\begin{itemize}
+\item \textbf{A name masker.}
+  \begin{itemize}
+  \item \lab{Why:} names are the one personal detail the LLM still sees.
+  \item \lab{Why not yet:} it needs a trained model for Indian names; patterns cannot catch them.
+  \end{itemize}
+\item \textbf{A small fine-tuned text model (LoRA) for L2.}
+  \begin{itemize}
+  \item \lab{Why:} it reads meaning, so fewer documents reach the LLM and people.
+  \item \lab{Why not yet:} it needs labelled real documents; on synthetic data the current model already settles \N{no-llm}, so a gain is unmeasurable.
+  \end{itemize}
+\item \textbf{Conformal prediction on critical classes.}
+  \begin{itemize}
+  \item \lab{Why:} turns ``recall of 0.90 or more'' from a measured result into a guarantee.
+  \item \lab{Why not yet:} it is only as good as its calibration set; on synthetic data it would describe our generator, not the bank.
+  \end{itemize}
+\item \textbf{A vision LLM for scans with no readable text.}
+  \begin{itemize}
+  \item \lab{Why:} these are the documents most likely to reach a person today.
+  \item \lab{Why not yet:} a page image cannot be masked like text, so full ID numbers and photos would reach the LLM.
+  \end{itemize}
+\item \textbf{More outside document types for the splitter.}
+  \begin{itemize}
+  \item \lab{Why:} bank statements were the only outside type tested.
+  \item \lab{Why not yet:} no safe public Indian KYC, deed or marksheet sets exist; search hits were real people's documents.
+  \end{itemize}
+\end{itemize}
+
+\end{document}
