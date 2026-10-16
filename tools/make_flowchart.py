@@ -132,9 +132,13 @@ def main() -> None:
     def pct(v, nd=0):
         return f"{100 * v:.{nd}f}%" if isinstance(v, (int, float)) else "?"
 
-    c = Chart(dy=55)
-    c.node("<b>Classifying 5M bank documents on a &#8377;1,00,000 budget: how one document moves through the pipeline</b>",
-           20, -45, 1400, 30, "text;html=1;fontSize=18;align=left;verticalAlign=middle;")
+    TOP = 105                  # room for the heading, the same as the approach note's
+    c = Chart(dy=TOP)
+    c.node("<b style='font-size:22px'>IDfy Privy APM Assignment: Pipeline Flowchart</b><br>"
+           "<b style='font-size:15px'>Vansh Gandhi</b><br>"
+           "<span style='font-size:16px;color:#787774'>Classifying 5M bank documents into 15 types on a fixed &#8377;1,00,000 budget: "
+           "how one document moves through the pipeline</span>",
+           20, 10 - TOP, 1400, 85, "text;html=1;align=left;verticalAlign=top;spacing=0;")
     W, MX, CX = 300, 470, 620  # main column: width, left edge, centre line
     D = 60                     # vertical offset of the flow, leaving room for the reading guide at the top left
 
@@ -243,7 +247,7 @@ def main() -> None:
            f"5M cost: &#8377;{total:,.0f} ({total / 5e6 * 100:.2f} paise a document) vs &#8377;{_inr(base.get('total_inr', 0))} brute force")
     c.node(res, MX, 1650 + D, 470, 100, NOTE + GREEN)
     OUT.parent.mkdir(exist_ok=True)
-    OUT.write_text(c.xml(1460, 1830 + D + 55))
+    OUT.write_text(c.xml(1460, 1830 + D + TOP))
     print(f"wrote {OUT}")
 
 
